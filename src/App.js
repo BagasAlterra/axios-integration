@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import NewsCard from "./components/NewsCard";
+import axios from "axios";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const baseUrl = "https://newsapi.org/v2/";
+const urlHeadline =
+  baseUrl + "top-headline?" + `country=id&` + `apiKey=${process.env.API_KEY}`;
+
+export default class App extends Component {
+  state = {
+    listNews: [],
+  };
+
+  // https://newsapi.org/v2/top-headlines?country=id&apiKey=027a0c86b59d4edaa9c304428b94a784
+
+  // componentDidMount() {
+  //   const self = this;
+  //   axios.get();
+  // }
+
+  render() {
+    return (
+      <div>
+        <div>
+          <NewsCard />
+        </div>
+      </div>
+    );
+  }
 }
-
-export default App;
