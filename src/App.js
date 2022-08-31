@@ -1,45 +1,96 @@
 import React, { Component } from "react";
-import NewsCard from "./components/NewsCard";
 import axios from "axios";
-
-const baseUrl = "https://newsapi.org/v2/";
-const urlHeadline =
-  baseUrl +
-  "top-headlines?" +
-  "country=id&" +
-  `apiKey=${process.env.REACT_APP_API_KEY}`;
 
 export default class App extends Component {
   state = {
-    listNews: [],
+    name: "",
+    address: "",
   };
 
-  componentDidMount() {
-    const self = this;
+  handleDeleteJson() {
     axios
-      .get(urlHeadline)
-      .then(function (response) {
+      .delete("https://jsonplaceholder.typicode.com/posts/1")
+      .then((response) => console.log(response.data));
+  }
+
+  handlePutJson() {
+    const user = {
+      idNumber: 1,
+      name: this.state.name,
+      address: this.state.address,
+    };
+    axios
+      .put("https://jsonplaceholder.typicode.com/posts/1", { user })
+      .then((response) => console.log("PUT :", response.data))
+      .catch((error) => alert(error));
+  }
+
+  handleGetJson() {
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts/1")
+      .then((response) => console.log(response.data))
+      .catch((error) => console.log(error));
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const user = {
+      name: this.state.name,
+      address: this.state.address,
+    };
+    axios
+      .post("https://jsonplaceholder.typicode.com/posts", { user })
+      .then((response) => {
+        alert(response.data.user.address);
         console.log(response.data);
-        self.setState({
-          listNews: response.data.articles,
-        });
       })
-      .catch(function (error) {
+      .catch((error) => {
         alert(error);
       });
   }
 
+  handleChangeName(event) {
+    this.setState({
+      name: event.target.value,
+    });
+  }
+
+  handleChangeAddress(event) {
+    this.setState({
+      address: event.target.value,
+    });
+  }
+
   render() {
-    const { listNews } = this.state;
     return (
       <div>
-        <div style={{ display: "flex", marginTop: 10, marginLeft: 10 }}>
-          {listNews.map((item) => {
-            return (
-              <NewsCard src={item.urlToImage} subTitle={item.description} />
-            );
-          })}
-        </div>
+        <form onSubmit={(value) => this.handleSubmit(value)}>
+          <label>
+            Person Name :
+            <input
+              type="text"
+              name="name"
+              onChange={(value) => this.handleChangeName(value)}
+            />
+          </label>
+          <label>
+            Address :
+            <input
+              type="text"
+              name="address"
+              onChange={(value) => this.handleChangeAddress(value)}
+            />
+          </label>
+
+          <button onClick={(value) => this.handleSubmit(value)} type="submit">
+            Post JSON
+          </button>
+        </form>
+        <button onClick={(value) => this.handleGetJson(value)}>Get JSON</button>
+        <button onClick={(value) => this.handlePutJson(value)}>Put JSON</button>
+        <button onClick={(value) => this.handleDeleteJson(value)}>
+          Delete JSON
+        </button>
       </div>
     );
   }
